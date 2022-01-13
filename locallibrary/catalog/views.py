@@ -25,6 +25,7 @@ from django.views import generic
 
 class BookListView(generic.ListView):
     model = Book
+    paginate_by = 4
     
     # context_object_name = 'my_book_list'   # ваше собственное имя переменной контекста в шаблоне
     # queryset = Book.objects.filter(title__icontains='war')[:5] # Получение 5 книг, содержащих слово 'war' в заголовке
