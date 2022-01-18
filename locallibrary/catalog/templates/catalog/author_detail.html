@@ -16,4 +16,18 @@
 </dl>
 
 </div>
+<style>
+   button {
+	background: #008EB0;
+    color: #fff;
+	padding: 1rem 1.5rem;
+    border: none;
+    margin-bottom: 1rem;
+   }
+   .red { background: #C1172C; }
+  </style>
+{% if user.is_staff %}
+<form action="{% url 'author-delete' author.pk %}"><p style="position:absolute; bottom; left: 110px;"><button class="red">Delete</button></form>
+<form action="{% url 'author-update' author.pk %}"><p style="position:absolute; bottom; left: 20px;"><button>Update</button></form>
+{% endif %}
 {% endblock %}
