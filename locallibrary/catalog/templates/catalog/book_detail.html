@@ -20,4 +20,5 @@
     <p class="text-muted"><strong>Id:</strong> {{copy.id}}</p>
     {% endfor %}
   </div>
+{% if user.is_staff %} <form action="{% url 'book-delete' book.pk %}"><p style="text-align: left-side"><button>Delete</button>{% endif %}
 {% endblock %}
