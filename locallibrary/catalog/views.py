@@ -25,7 +25,7 @@ from django.views import generic
 
 class BookListView(generic.ListView):
     model = Book
-    paginate_by = 4
+    paginate_by = 10
     
     # context_object_name = 'my_book_list'   # ваше собственное имя переменной контекста в шаблоне
     # queryset = Book.objects.filter(title__icontains='war')[:5] # Получение 5 книг, содержащих слово 'war' в заголовке
@@ -116,6 +116,8 @@ def renew_book_librarian(request, pk):
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import Author
+from .models import Book
+from .models import BookInstance
 
 class AuthorCreate(PermissionRequiredMixin, CreateView):
     model = Author
@@ -144,11 +146,17 @@ class BookUpdate(PermissionRequiredMixin, UpdateView):
     fields = ['title', 'author', 'summary', 'isbn', 'genre', 'language']
     permission_required = 'catalog.can_mark_returned'
 
-
 class BookDelete(PermissionRequiredMixin, DeleteView):
     model = Book
     success_url = reverse_lazy('books')
     permission_required = 'catalog.can_mark_returned'
+    
+class BookInstanceUpdate(PermissionRequiredMixin, UpdateView):
+    model = BookInstance
+    pk_url_kwarg = 'id'
+    fields = ['id', 'book', 'status', 'imprint', 'due_back', 'status', 'borrower']
+    permission_required = 'catalog.can_mark_returned'
+    success_url = reverse_lazy('books')
     
 from .forms import UserRegistrationForm
 
@@ -166,3 +174,4 @@ def register(request):
     else:
         user_form = UserRegistrationForm()
     return render(request, 'account/register.html', {'user_form': user_form})
+    

@@ -12,7 +12,7 @@ urlpatterns = [
 
 urlpatterns += [
     path('mybooks/', views.LoanedBooksByUserListView.as_view(), name='my-borrowed'),
-    path(r'borrowed/', views.LoanedBooksAllListView.as_view(), name='all-borrowed'),
+    path('borrowed/', views.LoanedBooksAllListView.as_view(), name='all-borrowed'),
 ]
 
 urlpatterns += [
@@ -33,4 +33,8 @@ urlpatterns += [
 
 urlpatterns += [
     path('register/', views.register, name='register'),
+]
+
+urlpatterns += [
+    path('loan/<str:id>/update', views.BookInstanceUpdate.as_view(), name='loan'),
 ]
