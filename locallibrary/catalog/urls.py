@@ -1,5 +1,8 @@
 from django.urls import path
 from . import views
+from rest_framework import routers
+from django.urls import path, include
+
 
 
 urlpatterns = [
@@ -35,6 +38,11 @@ urlpatterns += [
     path('register/', views.register, name='register'),
 ]
 
+router = routers.DefaultRouter()
+router.register(r'users', views.UserViewSet)
+
 urlpatterns += [
     path('loan/<str:id>/update', views.BookInstanceUpdate.as_view(), name='loan'),
+    path('', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]

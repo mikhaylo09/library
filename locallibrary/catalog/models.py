@@ -62,6 +62,9 @@ class Book(models.Model):
         return ', '.join([ genre.name for genre in self.genre.all()[:3] ])
     display_genre.short_description = 'Genre'
 
+    def get_absolute_url(self):
+        return reverse('book-rewiev', args=[str(self.id)])
+
 import uuid # Required for unique book instances
 
 class BookInstance(models.Model):
@@ -122,3 +125,29 @@ class Author(models.Model):
         String for representing the Model object.
         """
         return '%s, %s' % (self.last_name, self.first_name)
+
+import uuid
+
+class Review(models.Model):
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique ID for book") 
+    RATE_STATUS = (
+        ('1', '1'),
+        ('2', '2'),
+        ('3', '3'),
+        ('4', '4'),
+        ('5', '5'),
+        ('6', '6'),
+        ('7', '7'),
+        ('8', '8'),
+        ('9', '9'),
+        ('10', '10'),
+    )
+    rate = models.DecimalField(max_digits=2, decimal_places=1, choices=RATE_STATUS, default='5', help_text='Rate book')
+    book = models.ForeignKey('Book', on_delete=models.SET_NULL, null=True)
+    content = models.TextField(max_length=1000, help_text="Enter your review for book")
+
+    def __str__(self):
+        return '%s (%s)' % (self.id,self.book.title)
+
+
