@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
-from .models import Book, Author, BookInstance, Genre, Language
+from .models import Book, Author, BookInstance, Genre, Language, Review
+#from locallibrary.catalog import serializers
 
 def index(request):
     """
@@ -26,20 +27,6 @@ from django.views import generic
 class BookListView(generic.ListView):
     model = Book
     paginate_by = 10
-    
-    # context_object_name = 'my_book_list'   # ваше собственное имя переменной контекста в шаблоне
-    # queryset = Book.objects.filter(title__icontains='war')[:5] # Получение 5 книг, содержащих слово 'war' в заголовке
-    # template_name = 'books/my_arbitrary_template_name_list.html'  # Определение имени вашего шаблона и его расположения
-    
-    # def get_queryset(self):
-        # return Book.objects.filter(title__icontains='war')[:5] # Получить 5 книг, содержащих 'war' в заголовке
-        
-    # def get_context_data(self, **kwargs):
-        # В первую очередь получаем базовую реализацию контекста
-        # context = super(BookListView, self).get_context_data(**kwargs)
-        # Добавляем новую переменную к контексту и инициализируем её некоторым значением
-        # context['some_data'] = 'This is just some data'
-        # return context
         
 class BookDetailView(generic.DetailView):
     model = Book
@@ -115,9 +102,6 @@ def renew_book_librarian(request, pk):
     
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from .models import Author
-from .models import Book
-from .models import BookInstance
 
 class AuthorCreate(PermissionRequiredMixin, CreateView):
     model = Author
@@ -139,7 +123,6 @@ class BookCreate(PermissionRequiredMixin, CreateView):
     model = Book
     fields = ['title', 'author', 'summary', 'isbn', 'genre', 'language']
     permission_required = 'catalog.can_mark_returned'
-
 
 class BookUpdate(PermissionRequiredMixin, UpdateView):
     model = Book
@@ -182,3 +165,19 @@ from .serializers import UserSerializer
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+class ReviewCreate(PermissionRequiredMixin, CreateView):
+    model = Review
+    fields = ['rate', 'book', 'content']
+    permission_required = 'catalog.can_mark_returned'
+
+from rest_framework.views import APIView
+from .serializers import BookSerializer, AuthorSerializer
+
+class BookallViewSet(viewsets.ModelViewSet):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+class AuthorallViewSet(viewsets.ModelViewSet):
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer

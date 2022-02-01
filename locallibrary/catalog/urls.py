@@ -40,9 +40,15 @@ urlpatterns += [
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
+router.register(r'bookall', views.BookallViewSet)
+router.register(r'authorall', views.AuthorallViewSet)
 
 urlpatterns += [
     path('loan/<str:id>/update', views.BookInstanceUpdate.as_view(), name='loan'),
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+]
+
+urlpatterns += [
+    path('book/<str:id>/review/create', views.ReviewCreate.as_view(), name='review-create'),
 ]
