@@ -51,4 +51,6 @@ urlpatterns += [
 
 urlpatterns += [
     path('book/<str:id>/review/create', views.ReviewCreate.as_view(), name='review-create'),
+    path(r'books', views.books_list, name='list'),
+    path(r'books/<int:pk>', views.book_detail, name='bdetail'),
 ]
