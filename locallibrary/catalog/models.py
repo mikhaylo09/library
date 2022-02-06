@@ -125,7 +125,6 @@ class Author(models.Model):
 
 class Review(models.Model):
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     RATE_STATUS = (
         (1, '1'),
         (2, '2'),
@@ -139,10 +138,10 @@ class Review(models.Model):
         (10, '10'),
     )
     rate = models.DecimalField(max_digits=2, decimal_places=1, choices=RATE_STATUS, default='5', help_text='Rate book')
-    book = models.ForeignKey('Book', on_delete=models.SET_NULL, null=True)
+    book = models.ForeignKey('Book', on_delete=models.SET_NULL, null=True, related_name="reviews")
     content = models.TextField(max_length=1000, help_text="Enter your review for book")
 
     def __str__(self):
-        return '%s (%s)' % (self.id,self.book.title)
+        return '%s (%s)' % (self.rate,self.book)
 
 

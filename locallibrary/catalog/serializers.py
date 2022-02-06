@@ -1,6 +1,6 @@
 from dataclasses import fields
 from django.contrib.auth.models import User
-from .models import Author, Book, Genre, Language
+from .models import Author, Book, Genre, Language, BookInstance, Review
 from rest_framework import serializers
 
 
@@ -24,11 +24,22 @@ class LanguageSerializer(serializers.ModelSerializer):
         model = Language
         fields = '__all__'
 
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = '__all__'
+
 class BookSerializer(serializers.ModelSerializer):
     author = serializers.CharField(max_length=255)
     genre = serializers.StringRelatedField(many=True)
     language = serializers.CharField(max_length=255)
+    reviews = ReviewSerializer(many=True)
 
     class Meta:
         model = Book
-        fields = ['id', 'title', 'author', 'summary', 'isbn', 'genre', 'language']
+        fields = ['id', 'title', 'author', 'summary', 'isbn', 'genre', 'language', 'reviews']
+
+class BookInstanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BookInstance
+        fields = '__all__'

@@ -160,7 +160,7 @@ def register(request):
     
 from django.contrib.auth.models import User
 from rest_framework import viewsets
-from .serializers import UserSerializer
+from .serializers import ReviewSerializer, UserSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -224,3 +224,29 @@ def book_detail(request, pk):
     elif request.method == 'DELETE':
         book.delete()
         return HttpResponse(status=204)
+
+@csrf_exempt
+def reviews_list(request):
+    if request.method == 'GET':
+        books = Review.objects.all()
+        serializer = ReviewSerializer(books, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = ReviewSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+#class ReviewCreateView(APIView):
+    #def post(self, request):
+        #review = ReviewSerializer(data=request.data)
+        #if review.is_valid():
+            #review.save()
+        #return JsonResponse(status=201)
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    

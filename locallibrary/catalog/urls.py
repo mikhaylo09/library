@@ -42,6 +42,7 @@ router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'bookall', views.BookallViewSet)
 router.register(r'authorall', views.AuthorallViewSet)
+#router.register(r'reviews', views.ReviewViewSet)
 
 urlpatterns += [
     path('loan/<str:id>/update', views.BookInstanceUpdate.as_view(), name='loan'),
@@ -53,4 +54,5 @@ urlpatterns += [
     path('book/<str:id>/review/create', views.ReviewCreate.as_view(), name='review-create'),
     path(r'books', views.books_list, name='list'),
     path(r'books/<int:pk>', views.book_detail, name='bdetail'),
+    path(r'reviews/', views.reviews_list, name='rlist'),
 ]
