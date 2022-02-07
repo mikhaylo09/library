@@ -53,7 +53,7 @@ class Book(models.Model):
         """
         Returns the url to access a particular book instance.
         """
-        return reverse('book-detail', args=[str(self.id)])
+        return reverse('book-lookup', args=[str(self.id)])
         
     def display_genre(self):
         """
@@ -114,7 +114,7 @@ class Author(models.Model):
         """
         Returns the url to access a particular author instance.
         """
-        return reverse('author-detail', args=[str(self.id)])
+        return reverse('author-lookup', args=[str(self.id)])
 
 
     def __str__(self):
@@ -137,7 +137,7 @@ class Review(models.Model):
         (9, '9'),
         (10, '10'),
     )
-    rate = models.DecimalField(max_digits=2, decimal_places=1, choices=RATE_STATUS, default='5', help_text='Rate book')
+    rate = models.IntegerField(choices=RATE_STATUS, default='5', help_text='Rate book')
     book = models.ForeignKey('Book', on_delete=models.SET_NULL, null=True, related_name="reviews")
     content = models.TextField(max_length=1000, help_text="Enter your review for book")
 

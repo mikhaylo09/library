@@ -7,10 +7,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('books/', views.BookListView.as_view(), name='books'),
-    path('book/<int:pk>', views.BookDetailView.as_view(), name='book-detail'),
-    path('authors/', views.AuthorListView.as_view(), name='authors'),
-    path('author/<int:pk>', views.AuthorDetailView.as_view(), name='author-detail'),
 ]
 
 urlpatterns += [
@@ -42,7 +38,7 @@ router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'bookall', views.BookallViewSet)
 router.register(r'authorall', views.AuthorallViewSet)
-#router.register(r'reviews', views.ReviewViewSet)
+router.register(r'reviews', views.ReviewViewSet)
 
 urlpatterns += [
     path('loan/<str:id>/update', views.BookInstanceUpdate.as_view(), name='loan'),
@@ -51,8 +47,11 @@ urlpatterns += [
 ]
 
 urlpatterns += [
-    path('book/<str:id>/review/create', views.ReviewCreate.as_view(), name='review-create'),
-    path(r'books', views.books_list, name='list'),
-    path(r'books/<int:pk>', views.book_detail, name='bdetail'),
-    path(r'reviews/', views.reviews_list, name='rlist'),
+    #path('book/<str:id>/review/create', views.ReviewCreate.as_view(), name='review-create'),
+    path('reviews/create', views.reviews_list, name='rlist'),
+    #path('reviews/create', views.ReviewCreateView.as_view(), name='rcreate'),
+    path('books/', views.BookListView.as_view(), name='books'),
+    path('booklook/<int:pk>', views.BookDetailView.as_view(), name='book-lookup'),
+    path('authors/', views.AuthorListView.as_view(), name='authors'),
+    path('authorlook/<int:pk>', views.AuthorDetailView.as_view(), name='author-lookup'),
 ]

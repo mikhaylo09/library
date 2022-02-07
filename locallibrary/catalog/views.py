@@ -1,7 +1,8 @@
 from django.shortcuts import render
+from django.db.models import Count
+from django.db import models
 
 from .models import Book, Author, BookInstance, Genre, Language, Review
-#from locallibrary.catalog import serializers
 
 def index(request):
     """
@@ -244,7 +245,7 @@ def reviews_list(request):
         #review = ReviewSerializer(data=request.data)
         #if review.is_valid():
             #review.save()
-        #return JsonResponse(status=201)
+        #return JsonResponse(serializers.data, status=201)
 
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()

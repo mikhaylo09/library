@@ -2,6 +2,7 @@ from dataclasses import fields
 from django.contrib.auth.models import User
 from .models import Author, Book, Genre, Language, BookInstance, Review
 from rest_framework import serializers
+from django.db.models import Avg
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -43,3 +44,4 @@ class BookInstanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = BookInstance
         fields = '__all__'
+
