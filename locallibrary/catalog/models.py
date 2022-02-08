@@ -41,6 +41,7 @@ class Book(models.Model):
     # ManyToManyField used because genre can contain many books. Books can cover many genres.
     # Genre class has already been defined so we can specify the object above.
     language = models.ForeignKey('Language', on_delete=models.SET_NULL, null=True)
+    rating = models.IntegerField('Rating', null=True)
 
     def __str__(self):
         """
@@ -143,5 +144,10 @@ class Review(models.Model):
 
     def __str__(self):
         return '%s (%s)' % (self.rate,self.book)
+
+
+
+    
+    
 
 

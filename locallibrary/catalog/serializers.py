@@ -1,8 +1,6 @@
-from dataclasses import fields
 from django.contrib.auth.models import User
 from .models import Author, Book, Genre, Language, BookInstance, Review
 from rest_framework import serializers
-from django.db.models import Avg
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -38,7 +36,7 @@ class BookSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Book
-        fields = ['id', 'title', 'author', 'summary', 'isbn', 'genre', 'language', 'reviews']
+        fields = ['id', 'title', 'author', 'summary', 'isbn', 'genre', 'language', 'reviews', 'rating']
 
 class BookInstanceSerializer(serializers.ModelSerializer):
     class Meta:
