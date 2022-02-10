@@ -1,36 +1,28 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import date
+from django.urls import reverse
+import uuid # Required for unique book instances
 
-# Create your models here.
 
 class Genre(models.Model):
-    """
-    Model representing a book genre (e.g. Science Fiction, Non Fiction).
-    """
+    #Model representing a book genre (e.g. Science Fiction, Non Fiction).
     name = models.CharField(max_length=200, help_text="Enter a book genre (e.g. Science Fiction, French Poetry etc.)")
 
     def __str__(self):
-        """
-        String for representing the Model object (in Admin site etc.)
-        """
+        #String for representing the Model object (in Admin site etc.)
         return self.name
+
 
 class Language(models.Model):
-    """Model representing a Language (e.g. English, French, Japanese, etc.)"""
-    name = models.CharField(max_length=200,
-                            help_text="Enter the book's natural language (e.g. English, French, Japanese etc.)")
+    name = models.CharField(max_length=200, help_text="Enter the book's natural language (e.g. English, French, Japanese etc.)")
 
     def __str__(self):
-        """String for representing the Model object (in Admin site etc.)"""
+        #String for representing the Model object (in Admin site etc.)
         return self.name
 
-from django.urls import reverse #Used to generate URLs by reversing the URL patterns
 
 class Book(models.Model):
-    """
-    Model representing a book (but not a specific copy of a book).
-    """
     title = models.CharField(max_length=200)
     author = models.ForeignKey('Author', on_delete=models.SET_NULL, null=True)
     # Foreign Key used because book can only have one author, but authors can have multiple books
@@ -42,38 +34,35 @@ class Book(models.Model):
     # Genre class has already been defined so we can specify the object above.
     language = models.ForeignKey('Language', on_delete=models.SET_NULL, null=True)
     rating = models.IntegerField('Rating', null=True, blank=True)
-    destroy = models.BooleanField(default=False)
+    STATE_VAL = (
+        (0, '0'),
+        (1, '1'),
+        (2, '2'),
+        (3, '3'),
+    )
+    state = models.IntegerField(choices=STATE_VAL, null=True, blank=True)
+    # 0-deleted, 1-not delete, 2-active, 3-history
     user = models.CharField(max_length=20, null=True, blank=True)
     date_destroy = models.DateField(null=True, blank=True)
     date_create = models.DateField(null=True, blank=True)
     date_update = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        """
-        String for representing the Model object.
-        """
+        #String for representing the Model object.
         return self.title
 
-
     def get_absolute_url(self):
-        """
-        Returns the url to access a particular book instance.
-        """
+        #Returns the url to access a particular book instance.
         return reverse('book-lookup', args=[str(self.id)])
         
     def display_genre(self):
-        """
-        Creates a string for the Genre. This is required to display genre in Admin.
-        """
+        #Creates a string for the Genre. This is required to display genre in Admin.
         return ', '.join([ genre.name for genre in self.genre.all()[:3] ])
     display_genre.short_description = 'Genre'
 
-import uuid # Required for unique book instances
 
 class BookInstance(models.Model):
-    """
-    Model representing a specific copy of a book (i.e. that can be borrowed from the library).
-    """
+    #Model representing a specific copy of a book (i.e. that can be borrowed from the library).
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique ID for this particular book across whole library")
     book = models.ForeignKey('Book', on_delete=models.SET_NULL, null=True)
     imprint = models.CharField(max_length=200)
@@ -94,9 +83,7 @@ class BookInstance(models.Model):
 
 
     def __str__(self):
-        """
-        String for representing the Model object
-        """
+        #String for representing the Model object
         return '%s (%s)' % (self.id,self.book.title)
         
     borrower = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -107,27 +94,22 @@ class BookInstance(models.Model):
             return True
         return False
         
+
 class Author(models.Model):
-    """
-    Model representing an author.
-    """
+    #Model representing an author.
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     date_of_birth = models.DateField(null=True, blank=True)
     date_of_death = models.DateField('Died', null=True, blank=True)
 
     def get_absolute_url(self):
-        """
-        Returns the url to access a particular author instance.
-        """
+        #Returns the url to access a particular author instance.
         return reverse('author-lookup', args=[str(self.id)])
 
-
     def __str__(self):
-        """
-        String for representing the Model object.
-        """
+        #String for representing the Model object.
         return '%s, %s' % (self.last_name, self.first_name)
+
 
 class Review(models.Model):
 
