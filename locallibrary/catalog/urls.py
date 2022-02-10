@@ -27,7 +27,7 @@ urlpatterns += [
 urlpatterns += [
     path('book/create/', views.BookCreate.as_view(), name='book-create'),
     path('book/<int:pk>/update/', views.BookUpdate.as_view(), name='book-update'),
-    path('book/<int:pk>/delete/', views.BookDelete.as_view(), name='book-delete'),
+    path('book/<int:pk>/delete/', views.delete_book, name='book-delete'),
 ]
 
 urlpatterns += [
@@ -37,6 +37,7 @@ urlpatterns += [
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'bookall', views.BookallViewSet)
+router.register(r'bookdestroyed', views.BookDestroyedViewSet)
 router.register(r'authorall', views.AuthorallViewSet)
 router.register(r'reviews', views.ReviewViewSet)
 
@@ -47,9 +48,7 @@ urlpatterns += [
 ]
 
 urlpatterns += [
-    #path('book/<str:id>/review/create', views.ReviewCreate.as_view(), name='review-create'),
     path('reviews/create', views.reviews_list, name='rlist'),
-    #path('reviews/create', views.ReviewCreateView.as_view(), name='rcreate'),
     path('books/', views.BookListView.as_view(), name='books'),
     path('booklook/<int:pk>', views.BookDetailView.as_view(), name='book-lookup'),
     path('authors/', views.AuthorListView.as_view(), name='authors'),

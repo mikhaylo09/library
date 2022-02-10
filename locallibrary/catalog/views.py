@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import Book, Author, BookInstance, Genre, Language, Review
+from django.contrib.auth.models import User
 
 def index(request):
     """
@@ -24,6 +25,7 @@ from django.views import generic
 
 class BookListView(generic.ListView):
     model = Book
+    queryset = Book.objects.filter(destroy=False)
     paginate_by = 10
         
 class BookDetailView(generic.DetailView):
@@ -101,6 +103,7 @@ def renew_book_librarian(request, pk):
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 
+
 class AuthorCreate(PermissionRequiredMixin, CreateView):
     model = Author
     fields = ['first_name', 'last_name', 'date_of_birth', 'date_of_death']
@@ -127,10 +130,12 @@ class BookUpdate(PermissionRequiredMixin, UpdateView):
     fields = ['title', 'author', 'summary', 'isbn', 'genre', 'language']
     permission_required = 'catalog.can_mark_returned'
 
-class BookDelete(PermissionRequiredMixin, DeleteView):
-    model = Book
-    success_url = reverse_lazy('books')
-    permission_required = 'catalog.can_mark_returned'
+def delete_book(request, pk):
+        box = Book.objects.filter(id=pk)
+        date_destroy = datetime.date.today()
+        user_destroy = request.user.username
+        box.update(destroy=True, user=user_destroy, date_destroy=date_destroy)
+        return HttpResponseRedirect(reverse('books') )
     
 class BookInstanceUpdate(PermissionRequiredMixin, UpdateView):
     model = BookInstance
@@ -158,7 +163,7 @@ def register(request):
     
 from django.contrib.auth.models import User
 from rest_framework import viewsets
-from .serializers import ReviewSerializer, UserSerializer
+from .serializers import ReviewSerializer, UserSerializer, BookDestroyedSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -173,8 +178,12 @@ from rest_framework.views import APIView
 from .serializers import BookSerializer, AuthorSerializer
 
 class BookallViewSet(viewsets.ModelViewSet):
-    queryset = Book.objects.all()
+    queryset = Book.objects.filter(destroy=False)
     serializer_class = BookSerializer
+
+class BookDestroyedViewSet(viewsets.ModelViewSet):
+    queryset = Book.objects.filter(destroy=True)
+    serializer_class = BookDestroyedSerializer
 
 class AuthorallViewSet(viewsets.ModelViewSet):
     queryset = Author.objects.all()
@@ -182,7 +191,6 @@ class AuthorallViewSet(viewsets.ModelViewSet):
 
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 
 
@@ -220,7 +228,7 @@ def book_detail(request, pk):
         return JsonResponse(serializer.errors, status=400)
 
     elif request.method == 'DELETE':
-        book.delete()
+        book.delete
         return HttpResponse(status=204)
 
 @csrf_exempt

@@ -38,6 +38,11 @@ class BookSerializer(serializers.ModelSerializer):
         model = Book
         fields = ['id', 'title', 'author', 'summary', 'isbn', 'genre', 'language', 'reviews', 'rating']
 
+class BookDestroyedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = ['title', 'isbn', 'destroy', 'user_destroy', 'date_destroy']
+
 class BookInstanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = BookInstance

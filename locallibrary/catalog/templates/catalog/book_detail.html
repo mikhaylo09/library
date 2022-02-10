@@ -35,8 +35,6 @@
 {% for copy in book.bookinstance_set.all %}
 <form action="{% url 'loan' copy.id %}"><p style="position:absolute; bottom; left: 196px;">
 <button class="green">Borrow</button></form>
-<form action="{% url 'loan' copy.id %}"><p style="position:absolute; bottom; left: 286px;">
-<button class="green">Review</button></form>
 {% endfor %}
 <form action="{% url 'book-delete' book.pk %}"><p style="position:absolute; bottom; left: 110px;"><button class="red">Delete</button></form>
 <form action="{% url 'book-update' book.pk %}"><p style="position:absolute; bottom; left: 20px;"><button>Update</button></form>
