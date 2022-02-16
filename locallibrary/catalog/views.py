@@ -31,7 +31,7 @@ def index(request):
         'index.html',
         context={'num_books':num_books,'num_instances':num_instances,'num_instances_available':num_instances_available,'num_authors':num_authors},
     )
-    
+  
 
 class BookListView(generic.ListView):
     model = Book
@@ -119,7 +119,7 @@ class AuthorDelete(PermissionRequiredMixin, DeleteView):
 class BookCreate(PermissionRequiredMixin, CreateView):
     model = Book
     kwarg = 'id'
-    fields = ['title', 'author', 'summary', 'isbn', 'genre', 'language']
+    fields = ['title', 'author', 'summary', 'isbn', 'genre', 'language', 'image']
     permission_required = 'catalog.can_mark_returned'
 
     def form_valid(self, form):
@@ -140,7 +140,7 @@ class BookUpdate(PermissionRequiredMixin, UpdateView):
         obj.state = '3'
         obj.save()
         for x in obj.genre.all():
-            obj.genre.add(x)
+            obj.genre.create(x)
             print (x)
         return super(BookUpdate, self).get(request, *args, **kwargs)
 
@@ -150,7 +150,7 @@ class BookUpdate(PermissionRequiredMixin, UpdateView):
         form.instance.state = '2'
         return super(BookUpdate, self).form_valid(form)
 
-    fields = ['title', 'author', 'summary', 'isbn', 'genre', 'language']
+    fields = ['title', 'author', 'summary', 'isbn', 'genre', 'language', 'image']
     permission_required = 'catalog.can_mark_returned'
 
         # Arguments from form
@@ -209,6 +209,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+
 class ReviewCreate(PermissionRequiredMixin, CreateView):
     model = Review
     fields = ['rate', 'book', 'content']
@@ -219,9 +220,11 @@ class BookallViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.filter(state='2')
     serializer_class = BookSerializer
 
+
 class BookDestroyedViewSet(viewsets.ModelViewSet):
-    queryset = Book.objects.filter(state='2')
+    queryset = Book.objects.filter(state='0')
     serializer_class = BookDestroyedSerializer
+
 
 class AuthorallViewSet(viewsets.ModelViewSet):
     queryset = Author.objects.all()

@@ -1,11 +1,14 @@
-from urllib import request
 from django.urls import path
 from . import views
 from rest_framework import routers
 from django.urls import path, include
+from rest_framework_swagger.views import get_swagger_view
 
+
+schema_view = get_swagger_view(title='API')
 
 urlpatterns = [
+    path('swag/', schema_view),
     path('', views.index, name='index'),
     path('mybooks/', views.LoanedBooksByUserListView.as_view(), name='my-borrowed'),
     path('borrowed/', views.LoanedBooksAllListView.as_view(), name='all-borrowed'),
@@ -19,12 +22,14 @@ urlpatterns = [
     path('register/', views.register, name='register'),
 ]
 
+
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'bookall', views.BookallViewSet)
 router.register(r'bookdestroyed', views.BookDestroyedViewSet)
 router.register(r'authorall', views.AuthorallViewSet)
 router.register(r'reviews', views.ReviewViewSet)
+
 
 urlpatterns += [
     path('loan/<str:id>/update', views.BookInstanceUpdate.as_view(), name='loan'),

@@ -46,6 +46,7 @@ class Book(models.Model):
     date_destroy = models.DateField(null=True, blank=True)
     date_create = models.DateField(null=True, blank=True)
     date_update = models.DateField(null=True, blank=True)
+    image = models.ImageField(upload_to='images/%Y-%m-%d/', null=True)
 
     def __str__(self):
         #String for representing the Model object.
@@ -60,6 +61,11 @@ class Book(models.Model):
         return ', '.join([ genre.name for genre in self.genre.all()[:3] ])
     display_genre.short_description = 'Genre'
 
+    def set_image(self, image):
+            if self.image is not None:
+                self.image.delete()
+            self.image = Picture.upload_image(owner=self.book.id, image=image, base=self.id)
+            self.save()
 
 class BookInstance(models.Model):
     #Model representing a specific copy of a book (i.e. that can be borrowed from the library).
@@ -80,7 +86,6 @@ class BookInstance(models.Model):
     class Meta:
         ordering = ["due_back"]
         permissions = (("can_mark_returned", "Set book as returned"),)
-
 
     def __str__(self):
         #String for representing the Model object
